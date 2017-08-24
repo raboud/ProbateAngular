@@ -1,0 +1,60 @@
+<div class="header">
+  <ul class='nav nav-pills pull-right'>
+    <li ui-sref-active='active'>
+      <a routerLink="home" routerLinkActive="active">Home</a>
+    </li>
+
+    <li ngbDropdown *ngIf='isAdmin()' ui-sref-active='active' class='dropdown'>
+      <a ngbDropdownToggle class='dropdown-toggle' data-toggle='dropdown'>Admin <span class='caret'></span></a>
+
+      <ul ngbDropdownMenu class='dropdown-menu' role='menu'>
+        <li>
+          <a class="dropdown-item" ui-sref='Accounts'>List of Accounts</a>
+        </li>
+        <li>
+          <a class="dropdown-item" ui-sref='Administrators'>List of Administrators</a>
+        </li>
+        <li>
+          <a class="dropdown-item" ui-sref='SiteConfig'>Site Configuration</a>
+        </li>
+        <!--<li>
+                  <a ui-sref='SearchConfig'>Search Configuration</a>
+              </li>-->
+      </ul>
+    </li>
+
+
+    <li ngbDropdown *ngIf='isAccountAdmin()' ui-sref-active='active' class='dropdown'>
+      <a ngbDropdownToggle class='dropdown-toggle' data-toggle='dropdown'>Account <span class='caret'></span></a>
+
+      <ul ngbDropdownMenu class='dropdown-menu' role='menu'>
+        <li *ngIf='isAccountAdmin()'>
+          <a ui-sref='acountLedger'>Ledger</a>
+        </li>
+        <li *ngIf='isAccountAdmin()'>
+          <a ui-sref='accountEdit'>Edit</a>
+        </li>
+      </ul>
+    </li>
+
+    <li ngbDropdown *ngIf='canSearch()' ui-sref-active='active' class='dropdown'>
+      <a ngbDropdownToggle class='dropdown-toggle' data-toggle='dropdown'>Search <span class='caret'></span></a>
+      <ul ngbDropdownMenu class='dropdown-menu' role='menu'>
+        <li>
+          <a ui-sref='PageSearch'>Page Search</a>
+        </li>
+        <li>
+          <a ui-sref='search'>Search</a>
+        </li>
+      </ul>
+    </li>
+    <li *ngIf='!isAuthenticated()' ui-sref-active='active'>
+        <a routerLink="login" routerLinkActive="active">Login</a>
+    </li>
+    <li *ngIf='isAuthenticated()' ui-sref-active='active'>
+        <a ui-sref='logout'>Logout</a>
+    </li>
+
+  </ul>
+  <h3>{{Site()}}</h3>
+</div>
