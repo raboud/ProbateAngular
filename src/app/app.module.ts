@@ -6,13 +6,12 @@ import { HttpModule } from '@angular/http';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 import { AppComponent } from './app.component';
-import { IdentityModule } from './identity/identity.module';
+import { IdentityModule } from './identity';
 import { AppRoutingModule } from './app-routing/app-routing.module';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 
-import { AuthService } from './auth.service';
-import { AlertService } from './alert.service';
+import { AlertModule } from './alert';
 import { ConfigurationService } from './configuration.service';
 import { StorageService } from './storage.service';
 import { HomeComponent } from './home/home.component';
@@ -22,7 +21,7 @@ import { HomeComponent } from './home/home.component';
     AppComponent,
     HeaderComponent,
     FooterComponent,
-    HomeComponent
+    HomeComponent,
   ],
   imports: [
     AppRoutingModule,
@@ -31,11 +30,16 @@ import { HomeComponent } from './home/home.component';
     FormsModule,
     ReactiveFormsModule,
 
-    NgbModule.forRoot(), BrowserModule,
+    NgbModule.forRoot(),
 
-    IdentityModule
+    IdentityModule,
+    AlertModule,
   ],
-  providers: [AuthService, AlertService, ConfigurationService, StorageService],
-  bootstrap: [AppComponent]
+  providers: [
+    ConfigurationService,
+    StorageService],
+  bootstrap: [
+    AppComponent,
+  ]
 })
 export class AppModule { }

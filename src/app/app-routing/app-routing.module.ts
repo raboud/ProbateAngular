@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { HomeComponent} from '../home/home.component';
-import { LoginComponent } from '../identity/login/login.component';
+import { IdentityModule, LoginComponent } from '../identity';
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -11,6 +11,7 @@ const appRoutes: Routes = [
 
 @NgModule({
   imports: [
+    IdentityModule,
     RouterModule.forRoot(
       appRoutes,
       { enableTracing: true } // <-- debugging purposes only

@@ -11,6 +11,7 @@ import { PasswordResetComponent } from './password-reset/password-reset.componen
 import { RefreshComponent } from './refresh/refresh.component';
 import { TokensComponent } from './tokens/tokens.component';
 import { PasswordForgotComponent } from './password-forgot/password-forgot.component';
+import { AuthService } from './auth.service';
 
 @NgModule({
   imports: [
@@ -19,15 +20,30 @@ import { PasswordForgotComponent } from './password-forgot/password-forgot.compo
     ReactiveFormsModule
   ],
   declarations: [
-    RegisterComponent,
-    LoginComponent,
-    ConfirmEmailComponent,
     AssociateComponent,
+    ConfirmEmailComponent,
+    LoginComponent,
     PasswordChangeComponent,
+    PasswordForgotComponent,
     PasswordResetComponent,
     RefreshComponent,
+    RegisterComponent,
     TokensComponent,
-    PasswordForgotComponent],
-    providers: []
+  ],
+  providers: [
+    AuthService,
+  ],
+  exports:
+  [
+    AssociateComponent,
+    ConfirmEmailComponent,
+    LoginComponent,
+    PasswordChangeComponent,
+    PasswordForgotComponent,
+    PasswordResetComponent,
+    RefreshComponent,
+    RegisterComponent,
+    TokensComponent,
+    ],
 })
 export class IdentityModule { }

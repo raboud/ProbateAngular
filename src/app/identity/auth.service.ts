@@ -10,17 +10,17 @@ import 'rxjs/add/operator/map';
 
 import { Observable } from 'rxjs/Observable';
 
-import { ConfigurationService } from './configuration.service';
-import { StorageService } from './storage.service';
+import { ConfigurationService } from '../configuration.service';
+import { StorageService } from '../storage.service';
 
-import { } from '../../typings/ChangePasswordModel.cs.d';
-import { } from '../../typings/ConfirmEmailModel.cs.d';
-import { } from '../../typings/CreateAccountModel.cs.d';
-import { } from '../../typings/EnableUserModel.cs.d';
-import { } from '../../typings/ForgotPasswordModel.cs.d';
-import { } from '../../typings/GetCostResult.cs.d';
-import { } from '../../typings/ResetPasswordModel.cs.d';
-import { } from '../../typings/UserModel.cs.d';
+import { } from './typings/ChangePasswordModel.cs.d';
+import { } from './typings/ConfirmEmailModel.cs.d';
+import { } from './typings/CreateAccountModel.cs.d';
+import { } from './typings/EnableUserModel.cs.d';
+import { } from './typings/ForgotPasswordModel.cs.d';
+import { } from './typings/GetCostResult.cs.d';
+import { } from './typings/ResetPasswordModel.cs.d';
+import { } from './typings/UserModel.cs.d';
 
 @Injectable()
 export class AuthService implements CanActivate {

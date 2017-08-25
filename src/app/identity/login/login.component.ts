@@ -1,8 +1,8 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
-import { AuthService } from '../../auth.service';
-import { AlertService } from '../../alert.service';
+import { AuthService } from '../auth.service';
+import { AlertService } from '../../alert';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +18,7 @@ export class LoginComponent implements OnInit {
     password: '',
   };
 
-  constructor(fb: FormBuilder, private auth: AuthService) {
+  constructor(fb: FormBuilder, private auth: AuthService, private alert: AlertService) {
     this.form = fb.group({
       'userName': [this.model.userName, Validators.required],
       'password': [this.model.password, Validators.required],
@@ -47,7 +47,7 @@ export class LoginComponent implements OnInit {
     },
     (message: string) => {
       console.log('Failure 2 - ' + message);
-      //        this.alert('danger', 'Login Failure:', message);
+      this.alert.error('Login Failure: ' + message);
         this.busy = false;
       });
   }
