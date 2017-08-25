@@ -40,13 +40,25 @@ export class LoginComponent implements OnInit {
 
 
     this.auth.login(this.model, this.form).then((response) => {
-      console.log('Success2 - ' + response);
+      //      $state.go('search');
+      this.busy = false;
+      this.test();
+
+    },
+    (message: string) => {
+      this.alert.error('Login Failure: ' + message);
+        this.busy = false;
+      });
+  }
+
+  test()
+  {
+    this.auth.getAdminList().then((response) => {
       //      $state.go('search');
       this.busy = false;
 
     },
     (message: string) => {
-      console.log('Failure 2 - ' + message);
       this.alert.error('Login Failure: ' + message);
         this.busy = false;
       });

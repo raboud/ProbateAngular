@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 // import { Router } from '@angular/router';
 // import { ActivatedRoute } from '@angular/router';
 import { CanActivate, ActivatedRoute, Router, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
-import { Http, Response, Headers } from '@angular/http';
+import { HttpClient, HttpResponse, HttpHeaders } from '@angular/common/http';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
 import 'rxjs/add/operator/toPromise';
@@ -18,14 +18,29 @@ import { } from './typings/ConfirmEmailModel.cs.d';
 import { } from './typings/CreateAccountModel.cs.d';
 import { } from './typings/EnableUserModel.cs.d';
 import { } from './typings/ForgotPasswordModel.cs.d';
-import { } from './typings/GetCostResult.cs.d';
+import { } from './typings/RefreshToken.cs.d';
 import { } from './typings/ResetPasswordModel.cs.d';
 import { } from './typings/UserModel.cs.d';
 
+interface TOKEN {
+  access_token: string;
+  refresh_token?: string;
+  token_type: string;
+  expires_in: number;
+  'as:client_id': string;
+  isAdmin: string;
+  isAccountAdmin: string;
+  accountName?: string;
+  userName: string;
+  '.issued': string;
+  '.expires': string;
+}
+
+
 @Injectable()
 export class AuthService implements CanActivate {
-  private jsonHeaders = new Headers({ 'Content-Type': 'application/json' });
-  private urlHeaders = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
+  private jsonHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
+  private urlHeaders = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
 
   authentication = {
     isAuth: false,
@@ -46,27 +61,25 @@ export class AuthService implements CanActivate {
   private clientId: string;
 
   constructor(
-    private http: Http,
+    private http: HttpClient,
     private router: Router,
     private route: ActivatedRoute,
     private configurationService: ConfigurationService,
     private storageService: StorageService) {
 
     this.configurationService.settingsLoaded$.subscribe(x => {
-      console.log('config loaded');
       this.serviceBase = this.configurationService.serverSettings.identityUrl;
       this.clientId = this.configurationService.serverSettings.clientId;
-      console.log('this.serviceBase ' + this.serviceBase );
     });
 
   }
 
-  getErrorMessage(response: Response, form: FormGroup) {
+  getErrorMessage(response: HttpResponse<any>, form: FormGroup) {
     let errors: any[];
     errors = [];
     if (response.status === 400) {
       // handle validation error
-      const validationErrorDictionary = JSON.parse(response.text());
+      const validationErrorDictionary = JSON.parse(response.body);
       for (const fieldName in validationErrorDictionary) {
         if (validationErrorDictionary.hasOwnProperty(fieldName)) {
           if (form && form.controls[fieldName]) {
@@ -190,70 +203,46 @@ export class AuthService implements CanActivate {
     }
 
 
-    return this.http.post(this.serviceBase + '/token', data, { headers: this.urlHeaders })
-    .toPromise()
+    return this.http.post<TOKEN>(this.serviceBase + '/token', data, { headers: this.urlHeaders })
+      .toPromise()
 
       .then((response) => {
-        const body = response.json();
-        if (body) {
-        console.log('Success - ' + body.toString());
-
-
-        if (model.useRefreshTokens) {
-          this.storageService.store('authorizationData',
-            {
-              token: body.access_token,
-              userName: model.userName,
-              refreshToken: body.refresh_token,
-              useRefreshTokens: true
-            });
-        } else {
-          this.storageService.store('authorizationData',
-            {
-              token: body.access_token,
-              userName: model.userName,
-              refreshToken: '',
-              useRefreshTokens: false
-            });
-        }
-        this.authentication.isAuth = true;
-        this.authentication.userName = body.userName;
-        this.authentication.accountName = body.accountName;
-        this.authentication.isAdmin = body.isAdmin === 'True';
-        this.authentication.isAccountAdmin = body.isAccountAdmin === 'True';
-        this.authentication.useRefreshTokens = model.useRefreshTokens;
-        console.log(JSON.stringify(this.storageService.retrieve('authorizationData')));
-      }
+          if (model.useRefreshTokens) {
+            this.storageService.store('authorizationData',
+              {
+                token: response.access_token,
+                userName: model.userName,
+                refreshToken: response.refresh_token,
+                useRefreshTokens: true
+              });
+          } else {
+            this.storageService.store('authorizationData',
+              {
+                token: response.access_token,
+                userName: model.userName,
+                refreshToken: '',
+                useRefreshTokens: false
+              });
+          }
+          this.authentication.isAuth = true;
+          this.authentication.userName = response.userName;
+          this.authentication.accountName = response.accountName;
+          this.authentication.isAdmin = response.isAdmin === 'True';
+          this.authentication.isAccountAdmin = response.isAccountAdmin === 'True';
+          this.authentication.useRefreshTokens = model.useRefreshTokens;
       }, (err: any) => {
-        console.log('Failure - ' + err);
         this.logOut();
-        console.log('Failure1 - ' + err);
         return Promise.reject(this.getErrorMessage(err, form));
       });
   }
 
-  isAdmin(): boolean {
-    return this.authentication.isAdmin;
-  }
-
-  isAccountAdmin() {
-    return this.authentication.isAccountAdmin;
-  }
-
-  isAuthenticated() {
-    return this.authentication.isAuth;
-  }
-
-  canSearch() {
-    return this.isAuthenticated(); // RAR || ((ServerAPI.SiteConfig) && ServerAPI.SiteConfig.AllowAnonymousSearches);
-  }
-
-  canPurchase() {
-    return this.authentication.isAuth;
-  }
+  isAdmin(): boolean { return this.authentication.isAdmin; }
+  isAccountAdmin() { return this.authentication.isAccountAdmin; }
+  isAuthenticated() { return this.authentication.isAuth; }
+  canSearch() { return this.isAuthenticated(); /* RAR || ((ServerAPI.SiteConfig) && ServerAPI.SiteConfig.AllowAnonymousSearches); */ }
+  canPurchase() { return this.authentication.isAuth; }
 
   fillAuthData() {
-
     const authData = this.storageService.retrieve('authorizationData');
     if (authData) {
       this.authentication.isAuth = true;
@@ -270,7 +259,7 @@ export class AuthService implements CanActivate {
   }
 
   getAdminList() {
-    this.http.get(this.serviceBase + 'api/account/AdminList')
+    return this.http.get(this.serviceBase + '/api/account/AdminList')
       .toPromise()
       .then((response) => response, (err) => this.getErrorMessage(err, null));
   }
@@ -309,7 +298,7 @@ export class AuthService implements CanActivate {
       }
     }
   }
-
+/*
   obtainAccessToken(externalData) {
     this.http.get(this.serviceBase + 'api/account/ObtainLocalAccessToken',
       {
@@ -338,7 +327,7 @@ export class AuthService implements CanActivate {
         this.getErrorMessage(err, null);
       });
   }
-
+*/
   registerExternal(registerExternalData) {
     this.http.post(this.serviceBase + 'api/account/registerexternal', registerExternalData)
       .toPromise()
@@ -359,6 +348,30 @@ export class AuthService implements CanActivate {
         this.logOut();
         this.getErrorMessage(err, null);
       });
+  }
+
+  getRefreshTokens() {
+    return this.http.get(this.serviceBase + 'api/refreshtokens')
+      .toPromise()
+      .then(function (results) {
+        return results;
+      });
+  }
+
+  deleteRefreshTokens(tokenid) {
+    return this.http.delete(this.serviceBase + 'api/refreshtokens/?tokenid=' + tokenid)
+      .toPromise()
+      .then(function (results) {
+        return results;
+      });
+  }
+
+  getAuthorizationHeader(): string{
+    const authData = this.storageService.retrieve('authorizationData');
+    if (authData) {
+        return 'Bearer ' + authData.token;
+    }
+    return;
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {

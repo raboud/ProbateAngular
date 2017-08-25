@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Response, RequestOptionsArgs, RequestMethod, Headers } from '@angular/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 
 import 'rxjs/Rx';
 import { Observable } from 'rxjs/Observable';
@@ -19,7 +19,7 @@ export class ConfigurationService {
   settingsLoaded$ = this.settingsLoadedSource.asObservable();
   isReady: boolean;
 
-  constructor(private http: Http, private storageService: StorageService) {
+  constructor(private http: HttpClient, private storageService: StorageService) {
     this.isReady = false;
     this.load();
   }
@@ -27,11 +27,8 @@ export class ConfigurationService {
   load() {
     const baseURI = document.baseURI.endsWith('/') ? document.baseURI : `${document.baseURI}/`;
     const url = `${baseURI}assets/appsettings.json`;
-    this.http.get(url).subscribe((response: Response) => {
-      console.log('server settings loaded');
-      this.serverSettings = response.json();
-      console.log(this.serverSettings);
-
+    this.http.get<IConfiguration>(url).subscribe((response) => {
+      this.serverSettings = response;
       this.storageService.store('basketUrl', this.serverSettings.basketUrl);
       this.storageService.store('catalogUrl', this.serverSettings.catalogUrl);
       this.storageService.store('identityUrl', this.serverSettings.identityUrl);

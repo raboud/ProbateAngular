@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { RegisterComponent } from './register/register.component';
@@ -12,12 +13,15 @@ import { RefreshComponent } from './refresh/refresh.component';
 import { TokensComponent } from './tokens/tokens.component';
 import { PasswordForgotComponent } from './password-forgot/password-forgot.component';
 import { AuthService } from './auth.service';
+import { AuthInjectorService } from './auth-injector.service';
+import { IdentityRoutingModule } from './identity-routing.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    IdentityRoutingModule,
   ],
   declarations: [
     AssociateComponent,
@@ -32,6 +36,11 @@ import { AuthService } from './auth.service';
   ],
   providers: [
     AuthService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInjectorService,
+      multi: true,
+    }
   ],
   exports:
   [
@@ -44,6 +53,6 @@ import { AuthService } from './auth.service';
     RefreshComponent,
     RegisterComponent,
     TokensComponent,
-    ],
+  ],
 })
 export class IdentityModule { }

@@ -16,9 +16,9 @@
               </tr>
           </thead>
           <tbody>
-              <tr data-ng-repeat="token in refreshTokens">
+              <tr *ngFor="let token of refreshTokens">
                   <td>
-                      <a data-ng-click="deleteRefreshTokens($index,token.id)" href="">Remove</a>
+                      <a (click)="deleteRefreshTokens(token)" href="">Remove</a>
                   </td>
                   <td>
                       {{ token.subject }}

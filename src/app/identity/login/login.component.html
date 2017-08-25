@@ -9,11 +9,11 @@
               <fieldset>
                   <ng-content></ng-content>
                   <div class="form-group">
-                      <label for="email">Email <a ui-sref="CreateAccount">(Create account)</a></label>
+                      <label for="email">Email <a  routerLink="/register" routerLinkActive="active">(Create account)</a></label>
                       <input class="form-control col-sm-6" placeholder="E-mail" name="email" type="email" formControlName="userName" autofocus required>
                   </div>
                   <div class="form-group">
-                      <label for="password">Password <a ui-sref="Forgot">(forgot password)</a></label>
+                      <label for="password">Password <a  routerLink="/passwordForgot" routerLinkActive="active">(forgot password)</a></label>
                       <input class="form-control" placeholder="Password" name="password" type="password" formControlName="password" required>
                   </div>
                   <!--<div class="checkbox">

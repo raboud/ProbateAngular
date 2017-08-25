@@ -29,31 +29,27 @@ export class AlertService {
   }
 
   success(message: string, keepAfterRouteChange = false) {
-    this.alert(AlertType.success, message, keepAfterRouteChange);
+    this.alert('success', message, keepAfterRouteChange);
   }
 
   error(message: string, keepAfterRouteChange = false) {
-    console.log('atlerting danger');
-    this.alert(AlertType.danger, message, keepAfterRouteChange);
+    this.alert('danger', message, keepAfterRouteChange);
   }
 
   info(message: string, keepAfterRouteChange = false) {
-    this.alert(AlertType.info, message, keepAfterRouteChange);
+    this.alert('AlertType.info', message, keepAfterRouteChange);
   }
 
   warn(message: string, keepAfterRouteChange = false) {
-    this.alert(AlertType.warning, message, keepAfterRouteChange);
+    this.alert('warning', message, keepAfterRouteChange);
   }
 
-  alert(type: AlertType, message: string, keepAfterRouteChange = false) {
-    console.log('atlerting2 - ' + type);
-
+  alert(type: string, message: string, keepAfterRouteChange = false) {
     this.keepAfterRouteChange = keepAfterRouteChange;
     const a = new Alert();
     a.message = message;
     a.type = type;
     this.subject.next(a);
-    console.log('atlerting3 ' + a.getTypeString() + ' - ' + a.type);
   }
 
   clear() {
