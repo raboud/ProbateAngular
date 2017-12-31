@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import {
-  IdentityModule,
   AssociateComponent,
   ConfirmEmailComponent,
   LoginComponent,
@@ -12,23 +11,30 @@ import {
   PasswordForgotComponent,
   PasswordResetComponent,
   TokensComponent,
-} from '.';
+} from './components';
 
+// we are configured for all paths to be lowercase via tha LowerCaseUrlSerializer
 const routes: Routes = [
-  { path: 'associate', component: AssociateComponent },
-  { path: 'confirmEMail', component: ConfirmEmailComponent },
+  {
+    path: 'identity',
+    children:
+    [
+      { path: 'associate', component: AssociateComponent },
+  { path: 'confirmemail', component: ConfirmEmailComponent },
   { path: 'login', component: LoginComponent },
-  { path: 'passwordChange', component: PasswordChangeComponent},
-  { path: 'passwordForgot', component: PasswordForgotComponent},
-  { path: 'passwordReset', component: PasswordResetComponent},
-  { path: 'refresh', component: RefreshComponent},
-  { path: 'register', component: RegisterComponent},
-  { path: 'tokens', component: TokensComponent},
+  { path: 'passwordchange', component: PasswordChangeComponent },
+  { path: 'passwordforgot', component: PasswordForgotComponent },
+  { path: 'passwordreset', component: PasswordResetComponent },
+  { path: 'refresh', component: RefreshComponent },
+  { path: 'register', component: RegisterComponent },
+  { path: 'tokens', component: TokensComponent },
+    ]
+  }
 ];
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes)
+    RouterModule.forChild(routes)
   ],
 
   exports: [

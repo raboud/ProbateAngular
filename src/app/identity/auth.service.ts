@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 // import { Router } from '@angular/router';
 // import { ActivatedRoute } from '@angular/router';
 import { CanActivate, ActivatedRoute, Router, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
-import { HttpClient, HttpResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpResponse, HttpHeaders } from '@angular/common/http';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
 import 'rxjs/add/operator/toPromise';
@@ -38,7 +38,7 @@ interface TOKEN {
 
 
 @Injectable()
-export class AuthService implements CanActivate {
+export class AuthService {
   private jsonHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
   private urlHeaders = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
 
@@ -73,6 +73,34 @@ export class AuthService implements CanActivate {
     });
 
   }
+
+
+  private handleError2(form: FormGroup) {
+    return (err: any) => {
+      let errors: any[];
+      errors = [];
+
+      if (err instanceof HttpResponse) {
+        if (err.status === 400) {
+          // handle validation error
+          const validationErrorDictionary = JSON.parse(err.body);
+          for (const fieldName in validationErrorDictionary) {
+            if (validationErrorDictionary.hasOwnProperty(fieldName)) {
+              if (form && form.controls[fieldName]) {
+                // integrate into angular's validation if we have field validation
+                form.controls[fieldName].setErrors({ invalid: true });
+              } else {
+                // if we have cross field validation then show the validation error at the top of the screen
+                errors.push(validationErrorDictionary[fieldName]);
+              }
+            }
+          }
+        }
+      }
+      return Observable.throw( errors.join(' '));
+    };
+  }
+
 
   getErrorMessage(response: HttpResponse<any>, form: FormGroup) {
     let errors: any[];
@@ -168,7 +196,6 @@ export class AuthService implements CanActivate {
   };
 
   confirmEmail(model: server.ConfirmEmailModel, form: FormGroup) {
-
     this.logOut();
 
     this.http.post(this.serviceBase + 'api/account/ConfirmEmail', model)
@@ -177,16 +204,14 @@ export class AuthService implements CanActivate {
   }
 
   forgotPassword(model: server.ForgotPasswordModel, form: FormGroup) {
-
     this.logOut();
 
-    this.http.post(this.serviceBase + 'api/account/ForgotPassword', model)
+    return this.http.post(this.serviceBase + '/api/account/ForgotPassword', model)
       .toPromise()
       .then((response) => response, (response) => this.getErrorMessage(response, form));
   }
 
   resetPassword(model: server.ResetPasswordModel, form: FormGroup) {
-
     this.logOut();
 
     this.http.post(this.serviceBase + 'api/account/ResetPassword', model)
@@ -195,17 +220,16 @@ export class AuthService implements CanActivate {
   }
 
   login(model, form: FormGroup) {
-
     let data: string = 'grant_type=password&username=' + model.userName + '&password=' + model.password;
 
     if (model.useRefreshTokens) {
       data = data + '&client_id=' + this.clientId;
     }
 
+    this.logOut();
 
     return this.http.post<TOKEN>(this.serviceBase + '/token', data, { headers: this.urlHeaders })
       .toPromise()
-
       .then((response) => {
           if (model.useRefreshTokens) {
             this.storageService.store('authorizationData',
@@ -374,8 +398,6 @@ export class AuthService implements CanActivate {
     return;
   }
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    return true;
 /*     //  $rootScope.$on('$stateChangeStart', function(event, toState) {
     if (!this.canSearch()) {
       if ((state.toState.name === 'search')) {
@@ -397,5 +419,5 @@ export class AuthService implements CanActivate {
       event.preventDefault();
       this.router.navigate(['home']);
     }
- */  }
+ */
 }

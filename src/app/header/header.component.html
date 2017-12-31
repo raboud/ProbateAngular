@@ -1,7 +1,7 @@
 <div class="header">
   <ul class='nav nav-pills pull-right'>
     <li ui-sref-active='active'>
-      <a routerLink="home" routerLinkActive="active">Home</a>
+      <a routerLink='home' routerLinkActive="active">Home</a>
     </li>
 
     <li ngbDropdown *ngIf='isAdmin()' ui-sref-active='active' class='dropdown'>
@@ -37,22 +37,22 @@
       </ul>
     </li>
 
-    <li ngbDropdown *ngIf='canSearch()' ui-sref-active='active' class='dropdown'>
+    <li ngbDropdown *ngIf='canSearch()' class='dropdown'>
       <a ngbDropdownToggle class='dropdown-toggle' data-toggle='dropdown'>Search <span class='caret'></span></a>
       <ul ngbDropdownMenu class='dropdown-menu' role='menu'>
         <li>
-          <a ui-sref='PageSearch'>Page Search</a>
+          <a routerLink="pagesearch" routerLinkActive="active">Page Search</a>
         </li>
         <li>
-          <a ui-sref='search'>Search</a>
+          <a routerLink="search" routerLinkActive="active">Search</a>
         </li>
       </ul>
     </li>
-    <li *ngIf='!isAuthenticated()' ui-sref-active='active'>
-        <a routerLink="login" routerLinkActive="active">Login</a>
+    <li *ngIf='!isAuthenticated()'>
+      <a routerLink="identity/login" routerLinkActive="active">Login</a>
     </li>
-    <li *ngIf='isAuthenticated()' ui-sref-active='active'>
-        <a ui-sref='logout'>Logout</a>
+    <li *ngIf='isAuthenticated()'>
+      <a (click)='logout()'>Logout</a>
     </li>
 
   </ul>

@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 
 import { AuthService } from '../auth.service';
 import { AlertService } from '../../alert';
@@ -9,6 +10,7 @@ import { AlertService } from '../../alert';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
+
 export class LoginComponent implements OnInit {
   form: FormGroup;  // new order form
   private busy: boolean;
@@ -18,7 +20,13 @@ export class LoginComponent implements OnInit {
     password: '',
   };
 
-  constructor(fb: FormBuilder, private auth: AuthService, private alert: AlertService) {
+  constructor(
+    fb: FormBuilder,
+    private auth: AuthService,
+    private alert: AlertService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {
     this.form = fb.group({
       'userName': [this.model.userName, Validators.required],
       'password': [this.model.password, Validators.required],
@@ -40,33 +48,14 @@ export class LoginComponent implements OnInit {
 
 
     this.auth.login(this.model, this.form).then((response) => {
-      //      $state.go('search');
-      this.busy = false;
-      this.test();
+      this.router.navigate(['home']);
+      // RAR      $state.go('search');
 
     },
-    (message: string) => {
-      this.alert.error('Login Failure: ' + message);
+      (message: string) => {
+        this.alert.error('Login Failure: ' + message);
         this.busy = false;
       });
   }
-
-  test()
-  {
-    this.auth.getAdminList().then((response) => {
-      //      $state.go('search');
-      this.busy = false;
-
-    },
-    (message: string) => {
-      this.alert.error('Login Failure: ' + message);
-        this.busy = false;
-      });
-  }
-  /*
-    $scope.forgot = function () {
-      $state.go('Forgot');
-    };
-   */
 
 }

@@ -12,9 +12,6 @@
       "node_modules/@types",
       "typings"
     ],
-    "files": [
-      "typings/ChangePasswordModel.cs.d.ts"
-    ],
     "lib": [
       "es2017",
       "dom"

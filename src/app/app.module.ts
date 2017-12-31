@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { UrlSerializer, DefaultUrlSerializer, UrlTree } from '@angular/router';
 
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
@@ -15,6 +16,12 @@ import { AlertModule } from './alert';
 import { ConfigurationService } from './configuration.service';
 import { StorageService } from './storage.service';
 import { HomeComponent } from './home/home.component';
+
+export class LowerCaseUrlSerializer extends DefaultUrlSerializer {
+  parse(url: string): UrlTree {
+      return super.parse(url.toLowerCase());
+  }
+}
 
 @NgModule({
   declarations: [
@@ -37,7 +44,12 @@ import { HomeComponent } from './home/home.component';
   ],
   providers: [
     ConfigurationService,
-    StorageService],
+    StorageService,
+    {
+      provide: UrlSerializer,
+      useClass: LowerCaseUrlSerializer
+  }
+  ],
   bootstrap: [
     AppComponent,
   ]

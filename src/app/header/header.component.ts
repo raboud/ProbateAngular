@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 
 import { AuthService } from '../identity';
 
@@ -9,7 +10,11 @@ import { AuthService } from '../identity';
 })
 export class HeaderComponent implements OnInit {
 
-  constructor(private authService: AuthService) { }
+  constructor(
+    private authService: AuthService,
+    private auth: AuthService,
+    private router: Router
+  ) { }
 
   ngOnInit() {
   }
@@ -30,6 +35,11 @@ export class HeaderComponent implements OnInit {
     } else {
       return 'main';
     }
+  }
+
+  logout() {
+    this.authService.logOut();
+    this.router.navigate(['home']);
   }
 
 }
