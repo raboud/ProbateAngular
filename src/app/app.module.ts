@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, Injectable } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { UrlSerializer, DefaultUrlSerializer, UrlTree } from '@angular/router';
@@ -17,6 +17,7 @@ import { ConfigurationService } from './configuration.service';
 import { StorageService } from './storage.service';
 import { HomeComponent } from './home/home.component';
 
+@Injectable()
 export class LowerCaseUrlSerializer extends DefaultUrlSerializer {
   parse(url: string): UrlTree {
       return super.parse(url.toLowerCase());
@@ -37,7 +38,7 @@ export class LowerCaseUrlSerializer extends DefaultUrlSerializer {
     FormsModule,
     ReactiveFormsModule,
 
-    NgbModule.forRoot(),
+    NgbModule,
 
     IdentityModule,
     AlertModule,

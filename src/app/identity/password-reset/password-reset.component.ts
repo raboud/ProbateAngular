@@ -1,10 +1,12 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+//import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+//import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 
-import 'rxjs/add/operator/switchMap';
+//import 'rxjs/add/operator/switchMap';
 
-import { } from '../typings/ResetPasswordModel.cs.d';
+import { ResetPasswordModel } from '../typings/server.cs.d';
 
 @Component({
   selector: 'app-password-reset',
@@ -14,7 +16,7 @@ import { } from '../typings/ResetPasswordModel.cs.d';
 export class PasswordResetComponent implements OnInit {
   form: FormGroup;  // new order form
 
-    model: server.ResetPasswordModel = {
+    model: ResetPasswordModel = {
       userId: '',
       password: '',
       confirmPassword: '',

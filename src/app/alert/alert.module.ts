@@ -8,7 +8,7 @@ import { AlertService } from './alert.service';
 @NgModule({
   imports: [
     CommonModule,
-    NgbModule.forRoot(),
+    NgbModule,
   ],
   declarations: [
     AlertComponent

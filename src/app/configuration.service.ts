@@ -1,15 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 
-import 'rxjs/Rx';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/throw';
-import { Observer } from 'rxjs/Observer';
-import 'rxjs/add/operator/map';
-import { Subject } from 'rxjs/Subject';
+//import 'rxjs/Rx';
+//import 'rxjs/add/observable/throw';
+//import 'rxjs/add/operator/map';
 
 import { IConfiguration } from './models/configuration';
 import { StorageService } from './storage.service';
+import { Subject } from 'rxjs';
 
 @Injectable()
 export class ConfigurationService {

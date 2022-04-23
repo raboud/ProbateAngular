@@ -1,26 +1,15 @@
 import { Injectable } from '@angular/core';
-// import { Router } from '@angular/router';
-// import { ActivatedRoute } from '@angular/router';
-import { CanActivate, ActivatedRoute, Router, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
+;
 import { HttpClient, HttpErrorResponse, HttpResponse, HttpHeaders } from '@angular/common/http';
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import 'rxjs/add/operator/toPromise';
-import 'rxjs/add/operator/map';
-
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import { ConfigurationService } from '../configuration.service';
 import { StorageService } from '../storage.service';
 
-import { } from './typings/ChangePasswordModel.cs.d';
-import { } from './typings/ConfirmEmailModel.cs.d';
-import { } from './typings/CreateAccountModel.cs.d';
-import { } from './typings/EnableUserModel.cs.d';
-import { } from './typings/ForgotPasswordModel.cs.d';
-import { } from './typings/RefreshToken.cs.d';
-import { } from './typings/ResetPasswordModel.cs.d';
-import { } from './typings/UserModel.cs.d';
+import { ChangePasswordModel, ConfirmEmailModel, CreateAccountModel, EnableUserModel, ForgotPasswordModel, ResetPasswordModel, UserModel } from './typings/server.cs';
 
 interface TOKEN {
   access_token: string;
@@ -165,7 +154,7 @@ export class AuthService {
     this.authentication.isAccountAdmin = false;
   }
 
-  createAccount(model: server.CreateAccountModel): Promise<boolean> {
+  createAccount(model: CreateAccountModel): Promise<boolean> {
     return this.http.post(this.serviceBase + 'api/account/createAccount', model)
       .toPromise()
       .then((response) => {
@@ -177,25 +166,25 @@ export class AuthService {
       });
   }
 
-  createAdmin(model: server.UserModel, form: FormGroup) {
+  createAdmin(model: UserModel, form: FormGroup) {
     this.http.post(this.serviceBase + 'api/account/createAdmin', model)
       .toPromise()
       .then((response) => response, (response) => this.getErrorMessage(response, form));
   }
 
-  createUser(model: server.UserModel, form: FormGroup) {
+  createUser(model: UserModel, form: FormGroup) {
     this.http.post(this.serviceBase + 'api/account/createUser', model)
       .toPromise()
       .then((response) => response, (response) => this.getErrorMessage(response, form));
   }
 
-  changePassword = function (model: server.ChangePasswordModel, form: FormGroup) {
+  changePassword = function (model: ChangePasswordModel, form: FormGroup) {
     this.http.post(this.serviceBase + 'api/account/ChangePassword', model)
       .toPromise()
       .then((response) => response, (response) => this.getErrorMessage(response, form));
   };
 
-  confirmEmail(model: server.ConfirmEmailModel, form: FormGroup) {
+  confirmEmail(model: ConfirmEmailModel, form: FormGroup) {
     this.logOut();
 
     this.http.post(this.serviceBase + 'api/account/ConfirmEmail', model)
@@ -203,7 +192,7 @@ export class AuthService {
       .then((response) => response, (response) => this.getErrorMessage(response, form));
   }
 
-  forgotPassword(model: server.ForgotPasswordModel, form: FormGroup) {
+  forgotPassword(model: ForgotPasswordModel, form: FormGroup) {
     this.logOut();
 
     return this.http.post(this.serviceBase + '/api/account/ForgotPassword', model)
@@ -211,7 +200,7 @@ export class AuthService {
       .then((response) => response, (response) => this.getErrorMessage(response, form));
   }
 
-  resetPassword(model: server.ResetPasswordModel, form: FormGroup) {
+  resetPassword(model: ResetPasswordModel, form: FormGroup) {
     this.logOut();
 
     this.http.post(this.serviceBase + 'api/account/ResetPassword', model)
@@ -276,7 +265,7 @@ export class AuthService {
   }
 
   enableUser(id: string, enabled: boolean) {
-    const data: server.EnableUserModel = { Enabled: enabled, Id: id };
+    const data: EnableUserModel = { Enabled: enabled, Id: id };
     this.http.post(this.serviceBase + 'api/account/EnableUser', data)
       .toPromise()
       .then((response) => response, (err) => this.getErrorMessage(err, null));

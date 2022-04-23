@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 
-import { } from '../typings/ForgotPasswordModel.cs.d';
+import { ForgotPasswordModel } from '../typings/server.cs.d';
 import { AuthService } from '../auth.service';
 import { AlertService } from '../../alert';
 
@@ -14,7 +14,7 @@ import { AlertService } from '../../alert';
 
 export class PasswordForgotComponent implements OnInit {
   form: FormGroup;  // new order form
-  model: server.ForgotPasswordModel = { Email: '', ForgotPasswordPage: '' };
+  model: ForgotPasswordModel = { Email: '', ForgotPasswordPage: '' };
   private sent = false;
 
   constructor(fb: FormBuilder, private auth: AuthService, private alert: AlertService, private router: Router) {

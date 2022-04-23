@@ -1,8 +1,8 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { AuthService } from '../auth.service';
 import { AlertService } from '../../alert';
+import { RefreshToken } from '../typings/server.cs';
 
 @Component({
   selector: 'app-tokens',
@@ -11,7 +11,7 @@ import { AlertService } from '../../alert';
 })
 
 export class TokensComponent implements OnInit {
-  refreshTokens: server.RefreshToken[] = [];
+  refreshTokens: RefreshToken[] = [];
   constructor(private tokensManagerService: AuthService, private alert: AlertService) { }
 
   ngOnInit() {
@@ -23,7 +23,7 @@ export class TokensComponent implements OnInit {
       });
   }
 
-  deleteRefreshTokens(token: server.RefreshToken) {
+  deleteRefreshTokens(token: RefreshToken) {
     const tokenid: string = encodeURIComponent(token.id);
     this.tokensManagerService.deleteRefreshTokens(tokenid)
       .then(function (results) {
